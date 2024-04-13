@@ -1,0 +1,51 @@
+# continuous integration
+name: ci
+
+# Controls when the action will run. 
+on:
+  # Triggers the workflow on push or pull request events but only for the prod branch
+  push:
+    branches: [ npmjs ]
+  pull_request:
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  build:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
+        node-version: [18.x]
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v2
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'npm'
+        cache-dependency-path: |
+          package-lock.json
+
+    - name: Install dependencies
+      run: |
+        echo "install"
+        npm install
+        echo "show outdated (if any)"
+        npm outdated --depth=3 || echo "you must think about update your dependencies :)"
+
+    # TODO -- test
+
+    - name: Publish NpmJS package
+      if: github.ref == 'refs/heads/npmjs'
+      run: |
+        echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_DEPLOY_TOKEN }}" > .npmrc
+        npm whoami # rely on .npmrc
+        npm publish

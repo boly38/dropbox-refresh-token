@@ -1,0 +1,31 @@
+{
+  "name": "dropbox-refresh-token",
+  "version": "0.0.0",
+  "type": "module",
+  "description": "provide dropbox token related tooling",
+  "homepage": "https://github.com/boly38/dropbox-refresh-token#readme",
+  "license": "MIT",
+  "author": "Boly38 <boly38@gmail.com>",
+  "repository": {
+    "type": "git",
+    "url": "git+https://boly38@github.com/boly38/dropbox-refresh-token.git"
+  },
+  "keywords": [
+    "dropbox",
+    "refresh-token",
+    "access-token",
+    "application",
+    "key",
+    "secret"
+  ],
+  "bugs": {
+    "url": "https://github.com/boly38/dropbox-refresh-token/issues"
+  },
+  "main": "src/lib/dropboxRefreshToken.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "devDependencies": {
+    "dotenv": "^16.4.5"
+  }
+}
