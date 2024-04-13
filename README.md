@@ -1,5 +1,8 @@
 # dropbox-refresh-token
 
+[![NPM](https://nodei.co/npm/dropbox-refresh-token.png?compact=true)](https://npmjs.org/package/dropbox-refresh-token)
+
+
 ## About Dropbox long-lived tokens (and offline mode access)
 Dropbox didn't provide anymore (since On September 30th, 2021) long-live access token from dropbox portal ([src](https://dropbox.tech/developers/migrating-app-permissions-and-access-tokens#retiring-legacy-tokens)).
 
