@@ -40,9 +40,12 @@ Feature for a given DropBox app (appKey, appSecret).
 npm i dropbox-refresh-token
 ````
 
-- Integration
+- Integration examples
 ````javascript
 import {isSet, getShortLivedAccessCodeUrlViaLoginUrl, getRefreshToken, refreshAccessToken} from "dropbox-refresh-token";
+
+import {isSet, getCurrentAccount, isAccessTokenValid} from "dropbox-refresh-token";
+
 ````
 
 ## Console mode step-by-step to retrieve Dropbox RefreshToken
@@ -56,4 +59,8 @@ npm install
 # launch step by step to get refreshToken
 node src/dropbox_refresh_token.js
 # follow steps
+#
+# or to check if a token is valid
+node src/dropbox_is_token_valid.js
+
 ````

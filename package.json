@@ -21,7 +21,7 @@
   "bugs": {
     "url": "https://github.com/boly38/dropbox-refresh-token/issues"
   },
-  "main": "src/lib/dropboxRefreshToken.js",
+  "main": "src/lib/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
