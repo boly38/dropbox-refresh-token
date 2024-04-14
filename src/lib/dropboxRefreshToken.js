@@ -1,8 +1,6 @@
 export const isSet = value => value !== undefined && value !== null && value !== "";
 
 const DROPBOX_OAUTH2_TOKEN_API = 'https://api.dropbox.com/oauth2/token';
-
-const debugShowToken = process.env.DROPBOX_TOKEN_SHOW_TOKEN === "true" || true;
 const debugShowResponse = process.env.DROPBOX_TOKEN_SHOW_RESPONSE === "true";
 
 /**
@@ -42,9 +40,10 @@ export const getShortLivedAccessCodeUrlViaLoginUrl = appKey => {
  * @param shortLivedAccessCode
  * @param appKey
  * @param appSecret
+ * @param logToken produce a log with token value
  * @returns {Promise<unknown>}
  */
-export const getRefreshToken = async (shortLivedAccessCode, appKey, appSecret) => {
+export const getRefreshToken = async (shortLivedAccessCode, appKey, appSecret, logToken = false) => {
     return new Promise(async (resolve, reject) => {
         const response = await fetch(DROPBOX_OAUTH2_TOKEN_API, {
             method: 'POST',
@@ -71,7 +70,9 @@ export const getRefreshToken = async (shortLivedAccessCode, appKey, appSecret) =
             reject(new Error(`${error} - ${error_description}`));
             return;
         }
-        debugShowToken && console.log('🚀 ~ getRefreshToken ~ REFRESH_TOKEN (longLived):', refresh_token);
+        if (logToken) {
+            console.log('🚀 ~ getRefreshToken ~ REFRESH_TOKEN (longLived):', refresh_token);
+        }
         resolve(refresh_token);
     });
 }
@@ -80,9 +81,10 @@ export const getRefreshToken = async (shortLivedAccessCode, appKey, appSecret) =
  * @param refresh_token
  * @param appKey
  * @param appSecret
+ * @param logToken produce a log with token value
  * @returns {Promise<unknown>}
  */
-export const refreshAccessToken = async (refresh_token, appKey, appSecret) => {
+export const refreshAccessToken = async (refresh_token, appKey, appSecret, logToken = false) => {
     return new Promise(async (resolve, reject) => {
         const response = await fetch(DROPBOX_OAUTH2_TOKEN_API, {
             method: 'POST',
@@ -105,7 +107,9 @@ export const refreshAccessToken = async (refresh_token, appKey, appSecret) => {
             reject(new Error(`${error} : ${error_description}`));
             return;
         }
-        debugShowToken && console.log('🚀 ~ refreshAccessToken ~ AccessToken (shortLived):', access_token);
+        if (logToken) {
+            console.log('🚀 ~ refreshAccessToken ~ AccessToken (shortLived):', access_token);
+        }
         resolve(access_token);
     });
 }
