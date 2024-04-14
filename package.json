@@ -1,6 +1,6 @@
 {
   "name": "dropbox-refresh-token",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "type": "module",
   "description": "provide dropbox token related tooling",
   "homepage": "https://github.com/boly38/dropbox-refresh-token#readme",
