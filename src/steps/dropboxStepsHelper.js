@@ -20,7 +20,7 @@ export const retrieveShortLiveAccessCode = appKey => {
 
 export const getLongLivedRefreshTokenFromShortLivedAccessToken = async (shortLivedAccessCode, appKey, appSecret) => {
     console.log(" * get long lived refresh token from short lived access code");
-    return await getRefreshToken(shortLivedAccessCode, appKey, appSecret)
+    return await getRefreshToken(shortLivedAccessCode, appKey, appSecret, true)
         .catch(err => {
             if (err.message.includes("invalid_grant")) {
                 console.log("please unset DROPBOX_SHORT_LIVED_ACCESS_CODE (or set DROPBOX_REFRESH_TOKEN you got in the past) and retry");
@@ -35,7 +35,7 @@ export const getFreshSLAccessTokenFromRefreshToken = async (refreshToken, appKey
             resolve(null);
         }
         console.log(" - now we have DROPBOX_REFRESH_TOKEN (long lived), we could (offline) request a short-lived access token each time we need");
-        await refreshAccessToken(refreshToken, appKey, appSecret)
+        await refreshAccessToken(refreshToken, appKey, appSecret, true)
             .then(resolve)
             .catch(error => {
                 const {message} = error;

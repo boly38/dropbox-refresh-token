@@ -2,8 +2,7 @@
 import dotenv from "dotenv";
 
 import {dropbox_get_access_token_and_show_current_account} from "./steps/dropboxStepsHelper.js";
-import {isAccessTokenValid} from "./lib/index.js";
-import {isSet} from "./lib/dropboxRefreshToken.js";
+import {isSet, isAccessTokenValid} from "./lib/index.js";
 // load .env
 dotenv.config();
 
