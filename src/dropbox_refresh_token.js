@@ -4,5 +4,6 @@ import {dropbox_get_offline_long_term_access_token} from "./steps/dropboxStepsHe
 // load .env
 dotenv.config();
 
-dropbox_get_offline_long_term_access_token().then((r) => {
-});
+dropbox_get_offline_long_term_access_token()
+    .then(() => {})
+    .catch(err => console.error(err.message));
