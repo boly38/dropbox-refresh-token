@@ -1,3 +1,5 @@
+import fetch from 'cross-fetch'
+
 export const isSet = value => value !== undefined && value !== null && value !== "";
 
 const DROPBOX_OAUTH2_TOKEN_API = 'https://api.dropbox.com/oauth2/token';
@@ -43,39 +45,48 @@ export const getShortLivedAccessCodeUrlViaLoginUrl = appKey => {
  * @param logToken produce a log with token value
  * @returns {Promise<unknown>}
  */
-export const getRefreshToken = async (shortLivedAccessCode, appKey, appSecret, logToken = false) => {
-    return new Promise(async (resolve, reject) => {
-        const response = await fetch(DROPBOX_OAUTH2_TOKEN_API, {
+export const getRefreshToken = (shortLivedAccessCode, appKey, appSecret, logToken = false) => {
+    return new Promise((resolve, reject) => {
+        fetch(DROPBOX_OAUTH2_TOKEN_API, {
             method: 'POST',
             headers: oauth2Headers(appKey, appSecret),
             body: new URLSearchParams({
                 code: shortLivedAccessCode,
                 grant_type: 'authorization_code',
             }).toString(),
-        }).catch(error => {
-            console.error('Error getting refresh token:', error);
-            reject(error);
+        })
+            .then(response => {
+                response.json()
+                    .then(jsonResponse=> {
+                        debugShowResponse && console.log('Refresh Token Response:', jsonResponse);
+                        const {error, error_description, refresh_token} = jsonResponse;
+                        if (isSet(error)) {
+                            /*
+                             Example: 'invalid_client: Invalid client_id or client_secret'
+                             */
+                            debugShowResponse && console.error("error", error, error_description);
+                            reject(new Error(`${error} - ${error_description}`));
+                            return;
+                        }
+                        if (logToken) {
+                            console.log('🚀 ~ getRefreshToken ~ REFRESH_TOKEN (longLived):', refresh_token);
+                        }
+                        resolve(refresh_token);
+                    })
+                    .catch(error=>{
+                        const {message} = error;
+                        debugShowResponse && console.error(`Error getting refresh token message:${message}`);
+                        reject(new Error(`Dropbox getting refresh token returns invalid json: ${message}`));
+                    })
+            })
+            .catch(error => {
+            const {cause: {message, code, name}} = error;
+            debugShowResponse && console.error(`Error getting refresh token code:${code} name:${name} message:${message}`);
+            reject(new Error(message));
         });
-        if (!isSet(response)) {
-            return;
-        }
-        let jsonResponse = await response.json();
-        debugShowResponse && console.log('Refresh Token Response:', jsonResponse);
-        const {error, error_description, refresh_token} = jsonResponse;
-        if (isSet(error)) {
-            /*
-             Example: 'invalid_client: Invalid client_id or client_secret'
-             */
-            debugShowResponse && console.error("error", error, error_description);
-            reject(new Error(`${error} - ${error_description}`));
-            return;
-        }
-        if (logToken) {
-            console.log('🚀 ~ getRefreshToken ~ REFRESH_TOKEN (longLived):', refresh_token);
-        }
-        resolve(refresh_token);
     });
 }
+
 /**
  * get a fresh short-lived access token from a refresh-token
  * @param refresh_token
@@ -84,32 +95,40 @@ export const getRefreshToken = async (shortLivedAccessCode, appKey, appSecret, l
  * @param logToken produce a log with token value
  * @returns {Promise<unknown>}
  */
-export const refreshAccessToken = async (refresh_token, appKey, appSecret, logToken = false) => {
-    return new Promise(async (resolve, reject) => {
-        const response = await fetch(DROPBOX_OAUTH2_TOKEN_API, {
+export const refreshAccessToken = (refresh_token, appKey, appSecret, logToken = false) => {
+    return new Promise((resolve, reject) => {
+        fetch(DROPBOX_OAUTH2_TOKEN_API, {
             method: 'POST',
             headers: oauth2Headers(appKey, appSecret),
             body: new URLSearchParams({
                 refresh_token,
                 grant_type: 'refresh_token',
             }).toString(),
-        }).catch(error => {
-            debugShowResponse && console.error('Error getting refresh token:', error);
-            reject(error);
+        })
+            .then(response => {
+                response.json()
+                    .then(jsonResponse=>{
+                        debugShowResponse && console.log('Refresh Access Token Response:', jsonResponse);
+                        const {error, error_description, access_token} = jsonResponse;
+                        if (isSet(error)) {
+                            reject(new Error(`${error} : ${error_description}`));
+                            return;
+                        }
+                        if (logToken) {
+                            console.log('🚀 ~ refreshAccessToken ~ AccessToken (shortLived):', access_token);
+                        }
+                        resolve(access_token);
+                    })
+                    .catch(error=>{
+                        const {message} = error;
+                        debugShowResponse && console.error(`Error refreshing access token message:${message}`);
+                        reject(new Error(`Dropbox refreshing access token returns invalid json: ${message}`));
+                    })
+            })
+            .catch(error => {
+            const {cause: {message, code, name}} = error;
+            debugShowResponse && console.error(`Error refreshing access token code:${code} name:${name} message:${message}`);
+            reject(new Error(message));
         });
-        if (!isSet(response)) {
-            return;
-        }
-        let jsonResponse = await response.json();
-        debugShowResponse && console.log('Refresh Access Token Response:', jsonResponse);
-        const {error, error_description, access_token} = jsonResponse;
-        if (isSet(error)) {
-            reject(new Error(`${error} : ${error_description}`));
-            return;
-        }
-        if (logToken) {
-            console.log('🚀 ~ refreshAccessToken ~ AccessToken (shortLived):', access_token);
-        }
-        resolve(access_token);
     });
 }

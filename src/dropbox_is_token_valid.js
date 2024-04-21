@@ -12,14 +12,15 @@ await isAccessTokenValid("nimportk-NAWAK")
 
 console.log(" * get AccessToken via refresh token");
 await dropbox_get_access_token_and_show_current_account()
-    .then(async result=> {
-        if (isSet(result)) {
-            const {accessToken, info} = result
+    .then(result => {
+        const {accessToken, info} = result
+        if (isSet(accessToken)) {
             console.log(`just received access token for ${info.email} account ${info.account_id}`);
             console.log(" * now re-use isAccessTokenValid with a valid token")
-            await isAccessTokenValid(accessToken)
-                .then(console.log).catch(console.error)
+            isAccessTokenValid(accessToken)
+                .then(console.log)
+                .catch(err=>console.error(err.message))
         }
 
     })
-    .catch(console.error);
+    .catch(err=>console.error(err.message));
