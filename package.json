@@ -24,17 +24,19 @@
   "main": "src/lib/index.js",
   "scripts": {
     "lint": "eslint .",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo test&& mocha --bail --exit --unhandled-rejections=strict tests/*.test.js --timeout 50000"
   },
   "devDependencies": {
     "@eslint/js": "^9.0.0",
     "@stylistic/eslint-plugin-js": "^1.7.2",
+    "chai": "^5.1.0",
     "dotenv": "^16.4.5",
     "eslint": "^9.0.0",
     "eslint-plugin-eslint-plugin": "^6.0.0",
     "eslint-plugin-mocha": "^10.4.2",
     "eslint-plugin-node": "^11.1.0",
-    "globals": "^15.0.0"
+    "globals": "^15.0.0",
+    "mocha": "^10.4.0"
   },
   "dependencies": {
     "cross-fetch": "^4.0.0"

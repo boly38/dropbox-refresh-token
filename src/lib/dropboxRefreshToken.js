@@ -1,4 +1,5 @@
 import fetch from 'cross-fetch'
+import {reportDropboxFetchError} from "./dropboxUtil.js";
 
 export const isSet = value => value !== undefined && value !== null && value !== "";
 
@@ -57,7 +58,7 @@ export const getRefreshToken = (shortLivedAccessCode, appKey, appSecret, logToke
         })
             .then(response => {
                 response.json()
-                    .then(jsonResponse=> {
+                    .then(jsonResponse => {
                         debugShowResponse && console.log('Refresh Token Response:', jsonResponse);
                         const {error, error_description, refresh_token} = jsonResponse;
                         if (isSet(error)) {
@@ -73,17 +74,13 @@ export const getRefreshToken = (shortLivedAccessCode, appKey, appSecret, logToke
                         }
                         resolve(refresh_token);
                     })
-                    .catch(error=>{
+                    .catch(error => {
                         const {message} = error;
                         debugShowResponse && console.error(`Error getting refresh token message:${message}`);
                         reject(new Error(`Dropbox getting refresh token returns invalid json: ${message}`));
                     })
             })
-            .catch(error => {
-            const {cause: {message, code, name}} = error;
-            debugShowResponse && console.error(`Error getting refresh token code:${code} name:${name} message:${message}`);
-            reject(new Error(message));
-        });
+            .catch(error => reportDropboxFetchError(reject, error, "getting refresh token"));
     });
 }
 
@@ -107,7 +104,7 @@ export const refreshAccessToken = (refresh_token, appKey, appSecret, logToken = 
         })
             .then(response => {
                 response.json()
-                    .then(jsonResponse=>{
+                    .then(jsonResponse => {
                         debugShowResponse && console.log('Refresh Access Token Response:', jsonResponse);
                         const {error, error_description, access_token} = jsonResponse;
                         if (isSet(error)) {
@@ -119,16 +116,12 @@ export const refreshAccessToken = (refresh_token, appKey, appSecret, logToken = 
                         }
                         resolve(access_token);
                     })
-                    .catch(error=>{
+                    .catch(error => {
                         const {message} = error;
                         debugShowResponse && console.error(`Error refreshing access token message:${message}`);
                         reject(new Error(`Dropbox refreshing access token returns invalid json: ${message}`));
                     })
             })
-            .catch(error => {
-            const {cause: {message, code, name}} = error;
-            debugShowResponse && console.error(`Error refreshing access token code:${code} name:${name} message:${message}`);
-            reject(new Error(message));
-        });
+            .catch(error => reportDropboxFetchError(reject, error, "refreshing access token"));
     });
 }

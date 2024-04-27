@@ -41,7 +41,8 @@ jobs:
         echo "show outdated (if any)"
         npm outdated --depth=3 || echo "you must think about update your dependencies :)"
 
-    # TODO -- test
+    - name: Run tests
+      run: npm run test
 
     - name: Publish NpmJS package
       if: github.ref == 'refs/heads/npmjs'
