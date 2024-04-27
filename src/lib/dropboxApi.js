@@ -1,5 +1,6 @@
 import fetch from 'cross-fetch'
 import {isSet} from "./dropboxRefreshToken.js";
+import {reportDropboxFetchError} from "./dropboxUtil.js";
 
 const DROPBOX_API_BASE_URL = 'https://api.dropboxapi.com';
 
@@ -54,10 +55,7 @@ export const getCurrentAccount = access_token => {
                     });
 
             })
-            .catch(error => {
-                debugShowResponse && console.error('Error getting current account:', error);
-                reject(error);
-            });
+            .catch(error => reportDropboxFetchError(reject, error, "getting current account"));
 
     });
 }
