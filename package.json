@@ -21,6 +21,11 @@
   "bugs": {
     "url": "https://github.com/boly38/dropbox-refresh-token/issues"
   },
+  "bin": {
+    "get_refresh_token": "bin/get_refresh_token.js",
+    "dropbox_get_refresh_token": "bin/get_refresh_token.js",
+    "drt": "bin/get_refresh_token.js"
+  },
   "main": "src/lib/index.js",
   "scripts": {
     "lint": "eslint .",
@@ -39,6 +44,8 @@
     "mocha": "^10.4.0"
   },
   "dependencies": {
-    "cross-fetch": "^4.0.0"
+    "cross-fetch": "^4.0.0",
+    "inquirer": "^9.2.20",
+    "yesno": "^0.4.0"
   }
 }
